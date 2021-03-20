@@ -443,6 +443,19 @@ class SMO_IR(Game):
 
         self.curUser = "[{'id': 'SurrogateTVRePlayrobot', 'streamer': 'SurrogateTVRePlaystreamer', 'queueOptionId': '0', 'seat': 0, 'set': 0, 'enabled': True, 'username': 'dummydummydummydummydummydummydummyd'}]"
         self.userID = "eu-west-1:dummydummydummydummydummydummydummyd"
+        # self.userIDs = []
+        # self.userScores = []
+        # self.knownIndex = 0
+        # self.points = 0
+        # with open("player_scores.dat", "r") as file:
+        #     for line in file:
+        #         currentPlace=line[:-1]
+        #         breakPt = currentPlace.index("|")
+        #         uid = currentPlace[0:int(breakPt)]
+        #         score = int(currentPlace[int(breakPt)+1:])
+        #         if not uid in self.userIDs:
+        #             self.userIDs.append(uid)
+        #             self.userScores.append(score)
 
 # ----------------------------------------------------
 
@@ -453,6 +466,14 @@ class SMO_IR(Game):
         req = requests.get("https://g9b1fyald3.execute-api.eu-west-1.amazonaws.com/master/users?search="+str(player)).text
         uid = json.loads(req)['result'][0]['userId']
         self.userID = uid
+        # if str(uid) in self.userIDs:
+        #     self.knownIndex = self.userIDs.index(str(uid))
+        #     self.points = self.userScores[self.knownIndex]
+        # else: 
+        #     self.userIDs.append(str(uid))
+        #     self.points = 0
+        #     self.userScores.append(self.points)
+        #     self.knownIndex = len(self.userScores)-1
 
 # ----------------------------------------------------
 
@@ -479,6 +500,15 @@ class SMO_IR(Game):
         self.nsg.leftXAxis(128)   
 
         self.io.send_score(score=1, seat=0, final_score=True)
+
+        # self.userScores[0] = 0
+        # self.io.send_score(score=self.points, seat=1, final_score=True)
+        # self.userScores[self.knownIndex] = self.points
+
+        # with open("player_scores.dat", "w") as file:
+        #     for i in range(len(self.userIDs)):
+        #         item = self.userIDs[i]+"|"+str(self.userScores[i])
+        #         file.write('%s\n' % item)
 
         self.prepare = True
         self.knownIndex = 0
@@ -518,10 +548,33 @@ class SMO_IR(Game):
         plus_menu_ingame = get_pixel_detector(PLUS_MENU_INGAME, 50)
         game_main_menu = get_pixel_detector(GAME_MAIN_MENU, 50)
 
-        got_moon_big = get_pixel_detector(GOT_MOON_BIG, 50)
-        got_moon_retro = get_pixel_detector(GOT_MOON_RETRO, 50)
-        got_moon_normal = get_pixel_detector(GOT_MOON_NORMAL, 50)
-        got_multi_moon = get_pixel_detector(GOT_MULTI_MOON, 50)
+        # Point triggers
+        # detector = []
+        # gotten = []
+        # timeoutThreshold = []
+        # pointsToAdd = []
+        # curTimeout = []
+
+        # detector.append(get_pixel_detector(GOT_MOON_BIG, 15))
+        # gotten.append(True)
+        # timeoutThreshold.append(100)
+        # pointsToAdd.append(50) # Can be set to any value
+        # curTimeout.append(0)
+        # detector.append(get_pixel_detector(GOT_MOON_RETRO, 15))
+        # gotten.append(True)
+        # timeoutThreshold.append(100)
+        # pointsToAdd.append(30) # Can be set to any value
+        # curTimeout.append(0)
+        # detector.append(get_pixel_detector(GOT_MOON_NORMAL, 15))
+        # gotten.append(True)
+        # timeoutThreshold.append(100)
+        # pointsToAdd.append(50) 
+        # curTimeout.append(0)
+        # detector.append(get_pixel_detector(GOT_MULTI_MOON, 15))
+        # gotten.append(True)
+        # timeoutThreshold.append(100)
+        # pointsToAdd.append(50) # Can be set to any value
+        # curTimeout.append(0)
 
 
         # loop through frames
@@ -582,16 +635,33 @@ class SMO_IR(Game):
                     self.io.disable_input(0)
                     player = json.loads(json.dumps(self.curUser))[0]['username']
                     msg = "SAMPLE GAME\nGame locked due to either being at home screen or capture card bars. \nUser's information are as follows:\n> "+player+"\n> "+self.userID
+                    # Can use a service like Telegram to send a message to the game owner
                     LOCKED = True
             except:
                 if (shop_load(frame) or shop(frame) or screenshots(frame) or settings(frame) or home_menu(frame) or plus_menu_ingame(frame) or game_main_menu(frame)) and not LOCKED and not DEBUG:
                     player = json.loads(json.dumps(self.curUser))[0]['username']
                     msg = "SAMPLE GAME\nGame locked due to either being at home screen or capture card bars. \nUser's information are as follows:\n> "+player+"\n> "+self.userID
+                    # Can use a service like Telegram to send a message to the game owner
                     LOCKED = True
 
             if LOCKED: 
                 self.io.send_playing_ended()
                 self.prepare = True
+
+            # for pointTrigger in range(len(detector)):
+            #     if detector[pointTrigger](frame):
+            #         if not gotten[pointTrigger]:
+            #             self.points += pointsToAdd[pointTrigger]
+            #             self.io.send_score(score = self.points, seat = 0, final_score = False)
+            #             self.usb_2.press(NSButton.A)
+            #             await asyncio.sleep(0.1)
+            #             self.usb_2.release(NSButton.A)
+            #         curTimeout[pointTrigger] = 0
+            #         gotten[pointTrigger] = True
+            #     elif curTimeout[pointTrigger] < timeoutThreshold[pointTrigger]:
+            #         curTimeout[pointTrigger] += 1
+            #     else:
+            #         gotten[pointTrigger] = False
 
             # generic
             if i%100==0:
