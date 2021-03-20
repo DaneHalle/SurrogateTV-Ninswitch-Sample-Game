@@ -443,6 +443,7 @@ class SAMPLE_ADVANCED_GAME(Game):
 
         self.curUser = "[{'id': 'SurrogateTVRePlayrobot', 'streamer': 'SurrogateTVRePlaystreamer', 'queueOptionId': '0', 'seat': 0, 'set': 0, 'enabled': True, 'username': 'dummydummydummydummydummydummydummyd'}]"
         self.userID = "eu-west-1:dummydummydummydummydummydummydummyd"
+        # Dynamic point system
         # self.userIDs = []
         # self.userScores = []
         # self.knownIndex = 0
@@ -466,6 +467,7 @@ class SAMPLE_ADVANCED_GAME(Game):
         req = requests.get("https://g9b1fyald3.execute-api.eu-west-1.amazonaws.com/master/users?search="+str(player)).text
         uid = json.loads(req)['result'][0]['userId']
         self.userID = uid
+        # Dynamic point system
         # if str(uid) in self.userIDs:
         #     self.knownIndex = self.userIDs.index(str(uid))
         #     self.points = self.userScores[self.knownIndex]
@@ -500,10 +502,11 @@ class SAMPLE_ADVANCED_GAME(Game):
         self.nsg.leftYAxis(128)
         self.nsg.leftXAxis(128)   
 
-        self.io.send_score(score=1, seat=0, final_score=True)
+        self.io.send_score(score=1, seat=0, final_score=True) # Comment out if using below
 
+        # Dynamic point system
         # self.userScores[0] = 0
-        # self.io.send_score(score=self.points, seat=1, final_score=True)
+        # self.io.send_score(score=self.points, seat=0, final_score=True)
         # self.userScores[self.knownIndex] = self.points
 
         # with open("player_scores.dat", "w") as file:
@@ -541,6 +544,7 @@ class SAMPLE_ADVANCED_GAME(Game):
         # controller_dc_input_needed = get_pixel_detector(CONTROLLER_DC_INPUT_NEEDED, 50)
         # controller_dc_reconnected = get_pixel_detector(CONTROLLER_DC_RECONNECTED, 50)
 
+        # lock detector
         # shop_load = get_pixel_detector(SHOP_LOAD, 50)
         # shop = get_pixel_detector(SHOP, 50)
         # screenshots = get_pixel_detector(SCREENSHOTS, 50)
@@ -549,7 +553,7 @@ class SAMPLE_ADVANCED_GAME(Game):
         # plus_menu_ingame = get_pixel_detector(PLUS_MENU_INGAME, 50)
         # game_main_menu = get_pixel_detector(GAME_MAIN_MENU, 50)
 
-        # Point triggers
+        # Point detector
         # detector = []
         # gotten = []
         # timeoutThreshold = []
@@ -582,7 +586,7 @@ class SAMPLE_ADVANCED_GAME(Game):
         i = 0
         z = 0
         async for frame in self.cap.frames():
-            # detect
+            # detect trigger
             # if i%30==0 and (controller_dc_reconnected(frame) or controller_dc_input_needed(frame) or controller_dc_reconnected(frame) or controller_dc_input_needed(frame)):
             #     pi.write(nsg_reset, ON)
             #     await asyncio.sleep(0.5)
@@ -611,6 +615,7 @@ class SAMPLE_ADVANCED_GAME(Game):
             #         self.nsg.release(NSButton.A)
             #         await asyncio.sleep(2)
 
+            # Get to pause frames...Update as needed
             # if (self.prepare and not ((odyssey_nav_menu(frame) or talking(frame) or minus_menu_ingame(frame))) and not LOCKED) and not DEBUG:
             #     if z % 3 == 2:
             #         self.nsg.press(NSButton.A)
@@ -631,6 +636,7 @@ class SAMPLE_ADVANCED_GAME(Game):
             #     z = 0
             #     self.prepare = False
 
+            # lock trigger
             # try:
             #     if (shop_load(frame) or shop(frame) or screenshots(frame) or settings(frame) or home_menu(frame) or plus_menu_ingame(frame) or game_main_menu(frame)) and not LOCKED and not DEBUG:
             #         self.io.disable_input(0)
@@ -649,6 +655,7 @@ class SAMPLE_ADVANCED_GAME(Game):
                 self.io.send_playing_ended()
                 self.prepare = True
 
+            # Point trigger
             # for pointTrigger in range(len(detector)):
             #     if detector[pointTrigger](frame):
             #         if not gotten[pointTrigger]:
