@@ -485,8 +485,9 @@ class SAMPLE_ADVANCED_GAME(Game):
 
         self.prepare = True
 
-        while self.prepare: 
-            await asyncio.sleep(3)
+        # UNCOMMENT AFTER GETTING SUTIBLE PAUSE FRAMES
+        # while self.prepare: 
+        #     await asyncio.sleep(3)
 
 # ----------------------------------------------------
 
