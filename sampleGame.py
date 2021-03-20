@@ -390,7 +390,7 @@ class CaptureScreen(Switch):
 
 # ----------------------------------------------------
 
-class SMO_IR(Game):
+class SAMPLE_ADVANCED_GAME(Game):
     async def on_init(self):
         self.prepare = True
         # init controls
@@ -686,4 +686,4 @@ class SMO_IR(Game):
 
 
 if __name__ == "__main__":
-    SMO_IR().run()
+    SAMPLE_ADVANCED_GAME().run()
